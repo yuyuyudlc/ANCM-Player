@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+<head>
+  <title>音乐搜索</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.staticfile.net/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.net/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+  <style>
+    :root {
+      --transition-speed: 0.3s;
+      --transition-speed-slow: 0.5s;
+      --bg-primary: rgba(26, 22, 37, 1);
+      --bg-secondary: rgba(37, 35, 49, 1);
+      --text-color: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+    }
+
+    body {
+      transition: background-color var(--transition-speed-slow);
+      color: var(--text-color);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      overflow-x: hidden;
+      position: relative;
+      background-color: var(--bg-primary);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      z-index: -2;
+      transition: opacity var(--transition-speed-slow);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(100px);
+      z-index: -1;
+    }
+
+    .custom-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 10px;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .custom-card:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transform: translateY(-5px);
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .card-img-top {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .card-body {
+      flex: 1;
+      padding: 0 15px;
+    }
+
+    .card-title {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .card-text {
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .search-input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 20px;
+      padding: 12px 20px;
+      color: var(--text-color);
+      width: 100%;
+      max-width: 500px;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      outline: none;
+    }
+
+    .search-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-color);
+      border: none;
+      border-radius: 20px;
+      padding: 12px 25px;
+      margin-left: 10px;
+      transition: all 0.3s;
+    }
+
+    .search-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 15px 0;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: var(--text-color);
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      transition: all 0.3s;
+      margin: 0 10px;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--text-color);
+    }
+
+    .nav-link.active {
+      color: var(--text-color);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-color);
+      border-radius: 2px;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .search-container {
+        flex-direction: column;
+      }
+
+      .search-button {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+        max-width: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">音乐播放器</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">播放器</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="search.html">搜索</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h1 class="page-title">音乐搜索</h1>
+    <div class="row mb-4">
+      <div class="col-md-12 search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索歌曲或歌手">
+        <button class="search-button" id="searchButton">搜索</button>
+      </div>
+    </div>
+    <div class="row" id="searchResults">
+      <!-- 搜索结果将在这里动态生成 -->
+    </div>
+  </div>
+
+  <script>
+    // 示例歌曲数据
+    const sampleSongs = [
+      { id: 1, title: "我不念的", artist: "林宥嘉", cover: "music.png" },
+      { id: 2, title: "爱情转移", artist: "陈奕迅", cover: "music.png" },
+      { id: 3, title: "小幸运", artist: "田馥甄", cover: "music.png" },
+      { id: 4, title: "平凡之路", artist: "朴树", cover: "music.png" },
+      { id: 5, title: "岁月神偷", artist: "金玟岐", cover: "music.png" },
+      { id: 6, title: "演员", artist: "薛之谦", cover: "music.png" },
+      { id: 7, title: "告白气球", artist: "周杰伦", cover: "music.png" },
+      { id: 8, title: "只因你太美", artist: "火箭少女101", cover: "music.png" },
+      { id: 9, title: "你是我的眼", artist: "阿杜", cover: "music.png" },
+      { id: 10, title: "Caution", artist: "The Killers", cover: "music.png" }
+    ];
+
+    // 渲染搜索结果
+    function renderSearchResults(songs) {
+      const searchResultsContainer = document.getElementById('searchResults');
+      searchResultsContainer.innerHTML = '';
+
+      if (songs.length === 0) {
+        searchResultsContainer.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
+        return;
+      }
+
+      songs.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'col-md-4 mb-4';
+        songCard.innerHTML = `
+          <div class="custom-card" data-song-id="${song.id}">
+            <img src="${song.cover}" class="card-img-top" alt="${song.title}专辑封面">
+            <div class="card-body">
+              <h5 class="card-title">${song.title}</h5>
+              <p class="card-text">歌手：${song.artist}</p>
+            </div>
+          </div>
+        `;
+        searchResultsContainer.appendChild(songCard);
+
+        // 添加点击事件，点击卡片时播放歌曲
+        songCard.querySelector('.custom-card').addEventListener('click', function() {
+          playSong(song);
+        });
+      });
+    }
+
+    // 搜索功能
+    let searchTimeout;
+    const searchLoadingIndicator = document.createElement('div');
+    searchLoadingIndicator.className = 'text-center mt-3 d-none';
+    searchLoadingIndicator.innerHTML = '<div class="spinner-border text-light" role="status"><span class="visually-hidden">搜索中...</span></div>';
+    document.querySelector('.search-container').appendChild(searchLoadingIndicator);
+
+    async function searchSongs(query) {
+      try {
+        searchLoadingIndicator.classList.remove('d-none');
+        const response = await Promise.race([
+          fetch(`/api/search?query=${encodeURIComponent(query)}`),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('搜索超时')), 10000))
+        ]);
+        if (!response.ok) {
+          throw new Error('搜索请求失败');
+        }
+        const songs = await response.json();
+        return songs;
+      } catch (error) {
+        console.error('搜索出错:', error);
+        return [];
+      } finally {
+        searchLoadingIndicator.classList.add('d-none');
+      }
+    }
+
+    // 防抖处理搜索
+    function debounceSearch(func, wait) {
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(searchTimeout);
+          func(...args);
+        };
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(later, wait);
+      };
+    }
+
+    // 更新事件监听器
+    document.getElementById('searchButton').addEventListener('click', async function() {
+      const query = document.getElementById('searchInput').value.trim();
+      const results = await searchSongs(query);
+      renderSearchResults(results);
+    });
+
+    const debouncedSearch = debounceSearch(async (query) => {
+      const results = await searchSongs(query);
+      renderSearchResults(results);
+    }, 500);
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const query = this.value.trim();
+      if (query) {
+        debouncedSearch(query);
+      } else {
+        // 当搜索框为空时，清空搜索结果
+        document.getElementById('searchResults').innerHTML = '';
+      }
+    });
+
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const query = this.value.trim();
+        searchSongs(query).then(results => renderSearchResults(results));
+      }
+    });
+
+    function renderSearchResults(songs) {
+      const searchResultsContainer = document.getElementById('searchResults');
+      searchResultsContainer.innerHTML = '';
+
+      if (!songs || songs.length === 0) {
+        searchResultsContainer.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
+        return;
+      }
+
+      songs.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'col-md-4 mb-4';
+        songCard.innerHTML = `
+          <div class="custom-card" data-song-id="${song.id}">
+            <img src="${song.al.picUrl || 'music.png'}" class="card-img-top" alt="${song.name}专辑封面">
+            <div class="card-body">
+              <h5 class="card-title">${song.name}</h5>
+              <p class="card-text">歌手：${song.ar[0].name}</p>
+            </div>
+          </div>
+        `;
+        searchResultsContainer.appendChild(songCard);
+
+        // 添加点击事件，点击卡片时播放歌曲
+        songCard.querySelector('.custom-card').addEventListener('click', function() {
+          playSong(song);
+        });
+      });
+    }
+    async function playSong(song) {
+      try {
+        const response = await fetch('/api/play', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: song.id })
+        });
+        
+        if (!response.ok) {
+          throw new Error('播放请求失败');
+        }
+
+        const data = await response.json();
+        if (data.success) {
+          // 播放成功后跳转到播放页面
+          window.location.href = '/';
+        } else {
+          throw new Error(data.error || '播放失败');
+        }
+      } catch (error) {
+        console.error('播放出错:', error);
+        alert('播放失败，请稍后重试');
+      }
+    }
+  </script>
+</body>
+</html>
