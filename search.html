@@ -132,13 +132,12 @@
       background-color: rgba(255, 255, 255, 0.3);
       transform: scale(1.05);
     }
-
     .navbar {
       background-color: rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(10px);
       padding: 15px 0;
+      display: none;
     }
-
     .navbar-brand {
       font-weight: bold;
       font-size: 1.5rem;
@@ -240,13 +239,31 @@
       { id: 9, title: "你是我的眼", artist: "阿杜", cover: "music.png" },
       { id: 10, title: "Caution", artist: "The Killers", cover: "music.png" }
     ];
-
+    document.addEventListener('DOMContentLoaded', async function() {
+      // 页面加载时获取并显示歌单数据
+      try {
+        const response = await fetch('/api/playlist');
+        if (!response.ok) {
+          throw new Error('获取歌单数据失败');
+        }
+        const songs = await response.json();
+        renderSearchResults(songs.map(song => ({
+          id: song.id,
+          name: song.name,
+          ar: [{ name: song.ar[0].name }],
+          al: { picUrl: song.al.picUrl || 'music.png' }
+        })));
+      } catch (error) {
+        console.error('获取歌单数据失败:', error);
+        document.getElementById('searchResults').innerHTML = '<div class="col-12 text-center"><p>加载歌单数据失败，请稍后重试</p></div>';
+      }
+    });
     // 渲染搜索结果
     function renderSearchResults(songs) {
       const searchResultsContainer = document.getElementById('searchResults');
       searchResultsContainer.innerHTML = '';
 
-      if (songs.length === 0) {
+      if (!songs || songs.length === 0) {
         searchResultsContainer.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
         return;
       }
@@ -256,10 +273,10 @@
         songCard.className = 'col-md-4 mb-4';
         songCard.innerHTML = `
           <div class="custom-card" data-song-id="${song.id}">
-            <img src="${song.cover}" class="card-img-top" alt="${song.title}专辑封面">
+            <img src="${song.al.picUrl || 'music.png'}" class="card-img-top" alt="${song.name}专辑封面">
             <div class="card-body">
-              <h5 class="card-title">${song.title}</h5>
-              <p class="card-text">歌手：${song.artist}</p>
+              <h5 class="card-title">${song.name}</h5>
+              <p class="card-text">歌手：${song.ar[0].name}</p>
             </div>
           </div>
         `;
@@ -340,7 +357,6 @@
         searchSongs(query).then(results => renderSearchResults(results));
       }
     });
-
     function renderSearchResults(songs) {
       const searchResultsContainer = document.getElementById('searchResults');
       searchResultsContainer.innerHTML = '';
@@ -396,6 +412,6 @@
         alert('播放失败，请稍后重试');
       }
     }
-  </script>
+    </script>
 </body>
 </html>

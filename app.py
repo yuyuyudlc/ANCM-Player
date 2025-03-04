@@ -1,6 +1,8 @@
 from flask import Flask, render_template, jsonify, request
 from music import search_song, get_song_url
 from flask_cors import CORS
+from auth import cookie_login
+from playlist_info import get_playlist_songs
 import os
 import vlc
 
@@ -21,6 +23,9 @@ current_song_info = {
 # 添加全局播放器实例
 current_player = None
 
+# 尝试使用cookie登录
+cookie_login()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -39,6 +44,11 @@ def api_search():
     if results:
         return jsonify(results)
     return jsonify([])
+
+@app.route('/api/playlist')
+def api_playlist():
+    songs = get_playlist_songs()
+    return jsonify(songs)
 
 @app.route('/api/play', methods=['POST'])
 def api_play():
