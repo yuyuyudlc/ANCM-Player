@@ -283,7 +283,112 @@
       opacity: 0.5;
     }
 
+
+
+
+    .custom-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 10px;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .custom-card:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transform: translateY(-5px);
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .card-img-top {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .card-body {
+      flex: 1;
+      padding: 0 15px;
+    }
+
+    .card-title {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .card-text {
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .search-input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 20px;
+      padding: 12px 20px;
+      color: var(--text-color);
+      width: 100%;
+      max-width: 500px;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      outline: none;
+    }
+
+    .search-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-color);
+      border: none;
+      border-radius: 20px;
+      padding: 12px 25px;
+      margin-left: 10px;
+      transition: all 0.3s;
+    }
+
+    .search-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+    .navbar {
+      display: none;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
     @media (max-width: 768px) {
+      .search-container {
+        flex-direction: column;
+      }
+
+      .search-button {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+        max-width: 500px;
+      }
       .music-player {
         padding: 1rem;
       }
@@ -304,16 +409,34 @@
         width: 100%;
         right: -100%;
       }
+      
+    }
+    .back-btn :hover{
+      transform: scale(1.1);
+
     }
   </style>
 </head>
 <body>
-  <div class="dynamic-background">
-    <img src="" alt="" id="bgImage">
+
+  <div class="container mt-5" >
+    <h1 class="page-title">音乐搜索</h1>
+    <div class="row mb-4">
+      <div class="col-md-12 search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索歌曲或歌手">
+        <button class="search-button" id="searchButton">搜索</button>
+      </div>
+    </div>
+    <div class="row" id="searchResults">
+      <!-- 搜索结果将在这里动态生成 -->
+    </div>
   </div>
 
-  <div class="music-player">
-    <a href="/search" class="back-btn" style="position: fixed; top: 2rem; left: 2rem; color: var(--text-color); font-size: 2rem; text-decoration: none; transition: transform var(--transition-speed); z-index: 1000;"><i class="bi bi-arrow-left"></i></a>
+  <div class="dynamic-background"  style="display: none;">
+    <img src="" alt="" id="bgImage">
+  </div>
+  <div class="music-player" style="display: none;">
+    <a class="back-btn" style="position: fixed; top: 2rem; left: 2rem; color: var(--text-color); font-size: 2rem; text-decoration: none; transition: transform var(--transition-speed); z-index: 1000;"><i class="bi bi-arrow-left"></i></a>
     <div class="player-container">
       <div class="player-main">
         <div class="row justify-content-center">
@@ -384,6 +507,25 @@
     let isPlaying = false; // 播放状态
     let lastActiveIndex = -1; // 上一个高亮的歌词索引
 
+    document.addEventListener('DOMContentLoaded', async function() {
+      // 页面加载时获取并显示歌单数据
+      try {
+        const response = await fetch('/api/playlist');
+        if (!response.ok) {
+          throw new Error('获取歌单数据失败');
+        }
+        const songs = await response.json();
+        renderSearchResults(songs.map(song => ({
+          id: song.id,
+          name: song.name,
+          ar: [{ name: song.ar[0].name }],
+          al: { picUrl: song.al.picUrl || 'music.png' }
+        })));
+      } catch (error) {
+        console.error('获取歌单数据失败:', error);
+        document.getElementById('searchResults').innerHTML = '<div class="col-12 text-center"><p>加载歌单数据失败，请稍后重试</p></div>';
+      }
+    });
     // 更新背景颜色
     function updateBackgroundColor(coverUrl) {
       const colorThief = new ColorThief();
@@ -545,6 +687,179 @@
     // 监听专辑封面更换事件
     albumCover.addEventListener('load', () => {
       updateBackgroundColor(albumCover.src);
+    });
+
+    
+    // 处理返回按钮点击事件
+    document.querySelector('.back-btn').addEventListener('click', function() {
+      document.querySelector('.music-player').style.display = 'none';
+      document.querySelector('.container.mt-5').style.display = 'block';
+      document.querySelector('.dynamic-background').style.display = 'none';
+    });
+
+    
+    // 渲染搜索结果
+    function renderSearchResults(songs) {
+      const searchResultsContainer = document.getElementById('searchResults');
+      searchResultsContainer.innerHTML = '';
+
+      if (!songs || songs.length === 0) {
+        searchResultsContainer.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
+        return;
+      }
+
+      songs.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'col-md-4 mb-4';
+        songCard.innerHTML = `
+          <div class="custom-card" data-song-id="${song.id}">
+            <img src="${song.al.picUrl || 'music.png'}" class="card-img-top" alt="${song.name}专辑封面">
+            <div class="card-body">
+              <h5 class="card-title">${song.name}</h5>
+              <p class="card-text">歌手：${song.ar[0].name}</p>
+            </div>
+          </div>
+        `;
+        searchResultsContainer.appendChild(songCard);
+
+        // 添加点击事件，点击卡片时播放歌曲
+        songCard.addEventListener('click', function() {
+          playSong(song);
+          document.querySelector('.music-player').style.display = 'block';
+          document.querySelector('.container.mt-5').style.display = 'none';
+        });
+      });
+    }
+    
+    // 搜索功能
+    let searchTimeout;
+    const searchLoadingIndicator = document.createElement('div');
+    searchLoadingIndicator.className = 'text-center mt-3 d-none';
+    searchLoadingIndicator.innerHTML = '<div class="spinner-border text-light" role="status"><span class="visually-hidden">搜索中...</span></div>';
+    document.querySelector('.search-container').appendChild(searchLoadingIndicator);
+
+    async function searchSongs(query) {
+      try {
+        searchLoadingIndicator.classList.remove('d-none');
+        const response = await Promise.race([
+          fetch(`/api/search?query=${encodeURIComponent(query)}`),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('搜索超时')), 10000))
+        ]);
+        if (!response.ok) {
+          throw new Error('搜索请求失败');
+        }
+        const songs = await response.json();
+        return songs;
+      } catch (error) {
+        console.error('搜索出错:', error);
+        return [];
+      } finally {
+        searchLoadingIndicator.classList.add('d-none');
+      }
+    }
+
+    // 防抖处理搜索
+    function debounceSearch(func, wait) {
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(searchTimeout);
+          func(...args);
+        };
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(later, wait);
+      };
+    }
+
+    // 更新事件监听器
+    document.getElementById('searchButton').addEventListener('click', async function() {
+      const query = document.getElementById('searchInput').value.trim();
+      const results = await searchSongs(query);
+      renderSearchResults(results);
+    });
+
+    const debouncedSearch = debounceSearch(async (query) => {
+      const results = await searchSongs(query);
+      renderSearchResults(results);
+    }, 500);
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const query = this.value.trim();
+      if (query) {
+        debouncedSearch(query);
+      } else {
+        // 当搜索框为空时，清空搜索结果
+        document.getElementById('searchResults').innerHTML = '';
+      }
+    });
+
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const query = this.value.trim();
+        searchSongs(query).then(results => renderSearchResults(results));
+      }
+    });
+    function renderSearchResults(songs) {
+      const searchResultsContainer = document.getElementById('searchResults');
+      searchResultsContainer.innerHTML = '';
+
+      if (!songs || songs.length === 0) {
+        searchResultsContainer.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
+        return;
+      }
+
+      songs.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'col-md-4 mb-4';
+        songCard.innerHTML = `
+          <div class="custom-card" data-song-id="${song.id}">
+            <img src="${song.al.picUrl || 'music.png'}" class="card-img-top" alt="${song.name}专辑封面">
+            <div class="card-body">
+              <h5 class="card-title">${song.name}</h5>
+              <p class="card-text">歌手：${song.ar[0].name}</p>
+            </div>
+          </div>
+        `;
+        searchResultsContainer.appendChild(songCard);
+
+        // 添加点击事件，点击卡片时播放歌曲
+        songCard.querySelector('.custom-card').addEventListener('click', function() {
+          playSong(song);
+        });
+      });
+    }
+    async function playSong(song) {
+      try {
+        const response = await fetch('/api/play', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: song.id })
+        });
+        
+        if (!response.ok) {
+          throw new Error('播放请求失败');
+        }
+
+        const data = await response.json();
+        if (data.success) {
+          // 显示音乐播放器界面，隐藏搜索界面
+          document.querySelector('.music-player').style.display = 'flex';
+          document.querySelector('.container.mt-5').style.display = 'none';
+        } else {
+          throw new Error(data.error || '播放失败');
+        }
+      } catch (error) {
+        console.error('播放出错:', error);
+        alert('播放失败，请稍后重试');
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('.col-md-4.mb4').addEventListener('click', function() {
+        document.querySelector('.music-player').style.display = 'block';
+        document.querySelector('.container.mt-5').style.display = 'none';
+      });
     });
   </script>
 </body>

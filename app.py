@@ -125,12 +125,16 @@ def api_play():
 @app.route('/api/song_info')
 def get_song_info():
     global current_player, current_song_info
-    if current_player and current_song_info['is_playing']:
+    if current_player:
         current_time = current_player.get_time()
         total_length = current_player.get_length()
         if current_time >= 0 and total_length > 0:
             current_song_info['progress'] = current_time
             current_song_info['duration'] = total_length
+            # 检查歌曲是否播放完成
+            if current_time >= total_length:
+                current_song_info['is_playing'] = False
+                current_player.stop()
     return jsonify(current_song_info)
 
 @app.route('/api/toggle_play', methods=['POST'])
@@ -155,6 +159,26 @@ def stop_play():
         current_song_info['progress'] = 0
         return jsonify({'success': True})
     return jsonify({'success': False, 'error': '没有正在播放的歌曲'})
+
+@app.route('/api/set_progress', methods=['POST'])
+def set_progress():
+    global current_player, current_song_info
+    try:
+        data = request.get_json()
+        progress = data.get('progress')
+        if not current_player:
+            return jsonify({'success': False, 'error': '没有正在播放的歌曲'})
+        
+        # 设置播放进度（毫秒）
+        current_player.set_time(int(progress))
+        current_song_info['progress'] = progress
+        
+        return jsonify({
+            'success': True,
+            'current_time': progress
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
     app.run(port=5000, debug=False, host='127.0.0.1')
