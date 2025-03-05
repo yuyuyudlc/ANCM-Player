@@ -133,41 +133,7 @@
       transform: scale(1.05);
     }
     .navbar {
-      background-color: rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(10px);
-      padding: 15px 0;
       display: none;
-    }
-    .navbar-brand {
-      font-weight: bold;
-      font-size: 1.5rem;
-      color: var(--text-color);
-    }
-
-    .nav-link {
-      color: var(--text-secondary);
-      transition: all 0.3s;
-      margin: 0 10px;
-      position: relative;
-    }
-
-    .nav-link:hover {
-      color: var(--text-color);
-    }
-
-    .nav-link.active {
-      color: var(--text-color);
-    }
-
-    .nav-link.active::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background-color: var(--text-color);
-      border-radius: 2px;
     }
 
     .page-title {
@@ -192,25 +158,6 @@
   </style>
 </head>
 <body>
-  <!-- 导航栏 -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">音乐播放器</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">播放器</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="search.html">搜索</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 
   <div class="container mt-5">
     <h1 class="page-title">音乐搜索</h1>
@@ -227,18 +174,6 @@
 
   <script>
     // 示例歌曲数据
-    const sampleSongs = [
-      { id: 1, title: "我不念的", artist: "林宥嘉", cover: "music.png" },
-      { id: 2, title: "爱情转移", artist: "陈奕迅", cover: "music.png" },
-      { id: 3, title: "小幸运", artist: "田馥甄", cover: "music.png" },
-      { id: 4, title: "平凡之路", artist: "朴树", cover: "music.png" },
-      { id: 5, title: "岁月神偷", artist: "金玟岐", cover: "music.png" },
-      { id: 6, title: "演员", artist: "薛之谦", cover: "music.png" },
-      { id: 7, title: "告白气球", artist: "周杰伦", cover: "music.png" },
-      { id: 8, title: "只因你太美", artist: "火箭少女101", cover: "music.png" },
-      { id: 9, title: "你是我的眼", artist: "阿杜", cover: "music.png" },
-      { id: 10, title: "Caution", artist: "The Killers", cover: "music.png" }
-    ];
     document.addEventListener('DOMContentLoaded', async function() {
       // 页面加载时获取并显示歌单数据
       try {
