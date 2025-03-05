@@ -540,7 +540,29 @@
         document.documentElement.style.setProperty('--bg-secondary', `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})`);
       };
     }
+    document.addEventListener("DOMContentLoaded", function () {
+    const volumeSlider = document.querySelector(".volume-slider");
 
+    volumeSlider.addEventListener("input", function () {
+        const volume = volumeSlider.value;
+        
+        // 发送请求到后端
+        fetch("/api/set_volume", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ volume: volume })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error("设置音量失败:", data.error);
+            }
+        })
+        .catch(error => console.error("请求错误:", error));
+    });
+});
     // 更新歌曲信息
     async function updateSongInfo() {
       try {

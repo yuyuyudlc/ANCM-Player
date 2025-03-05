@@ -180,5 +180,24 @@ def set_progress():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
+@app.route('/api/set_volume', methods=['POST'])
+def set_volume():
+    global current_player
+    try:
+        data = request.get_json()
+        volume = data.get('volume')
+        if not current_player:
+            return jsonify({'success': False, 'error': '没有正在播放的歌曲'})
+        
+        # 设置音量（0-100）
+        current_player.audio_set_volume(int(volume))
+        
+        return jsonify({
+            'success': True,
+            'volume': volume
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
 if __name__ == '__main__':
     app.run(port=5000, debug=False, host='127.0.0.1')
