@@ -505,6 +505,7 @@
     const currentTime = document.querySelector('.time-info span:first-child');
     const totalTime = document.querySelector('.time-info span:last-child');
     const lyrics = document.querySelector('.lyrics');
+    pr_flag = 0;
     let isPlaying = false; // 播放状态
     let lastActiveIndex = -1; // 上一个高亮的歌词索引
 
@@ -597,6 +598,16 @@
           progressBarEl.style.width = `${progress}%`;
           currentTime.textContent = formatTime(data.progress);
           totalTime.textContent = formatTime(data.duration);
+        if (progress <= 5 && pr_flag === 1){
+          pr_flag = 0;
+          console.log("song start");
+        }
+        if (progress >= 99 && pr_flag === 0 ){
+          handlePlayButtonClick();
+          pr_flag = 1;
+          console.log("song end");
+        }
+
           // 更新歌词
           if (data.lyrics && data.lyrics.length > 0) {
             updateLyrics(data.lyrics, data.progress);
@@ -678,8 +689,7 @@
     const playerMain = document.querySelector('.player-main');
     const lyricsContainer = document.querySelector('.lyrics-container');
 
-    // 处理播放/暂停按钮点击
-    playBtn.addEventListener('click', async () => {
+    async function handlePlayButtonClick() {
       try {
         const response = await fetch('/api/toggle_play', {
           method: 'POST'
@@ -698,7 +708,10 @@
       } catch (error) {
         console.error('切换播放状态失败:', error);
       }
-    });
+    }
+
+    // 处理播放/暂停按钮点击
+    playBtn.addEventListener('click', handlePlayButtonClick);
 
     lyricsToggle.addEventListener('click', () => {
       playerMain.classList.toggle('show-lyrics');
