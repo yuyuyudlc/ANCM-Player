@@ -419,6 +419,7 @@
   </style>
 </head>
 <body>
+  <audio id="audioPlayer" style="display: none;"></audio>
 
   <div class="container mt-5" >
     <h1 class="page-title">音乐搜索</h1>
@@ -449,7 +450,7 @@
             </div>
             
             <div class="progress mt-4">
-              <div class="progress-bar" role="progressbar" style="width: 45%"></div>
+              <div class="progress-bar" role="progressbar" style="width: 1%"></div>
             </div>
             <div class="time-info">
               <span>2:15</span>
@@ -545,82 +546,7 @@
     document.addEventListener("DOMContentLoaded", function () {
     const volumeSlider = document.querySelector(".volume-slider");
 
-    volumeSlider.addEventListener("input", function () {
-        const volume = volumeSlider.value;
-        
-        // 发送请求到后端
-        fetch("/api/set_volume", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ volume: volume })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                console.error("设置音量失败:", data.error);
-            }
-        })
-        .catch(error => console.error("请求错误:", error));
-    });
 });
-    // 更新歌曲信息
-    async function updateSongInfo() {
-      try {
-        const response = await fetch('/api/song_info');
-        const data = await response.json();
-
-        // 更新歌曲信息
-        songTitle.textContent = data.title;
-        artistName.textContent = data.artist;
-
-        // 检查专辑封面是否变化
-        if (albumCover.src !== data.cover_url && data.cover_url) {
-          albumCover.src = data.cover_url;
-          updateBackgroundColor(data.cover_url); // 更新背景颜色
-        }
-
-        // 更新播放状态
-        isPlaying = data.is_playing;
-        const playIcon = playBtn.querySelector('i');
-        if (isPlaying) {
-          playIcon.className = 'bi bi-pause-circle-fill';
-          albumCover.classList.remove('paused');
-        } else {
-          playIcon.className = 'bi bi-play-circle-fill';
-          albumCover.classList.add('paused');
-        }
-
-        // 更新进度
-        if (data.duration > 0) {
-          const progress = (data.progress / data.duration) * 100;
-          progressBarEl.style.width = `${progress}%`;
-          currentTime.textContent = formatTime(data.progress);
-          totalTime.textContent = formatTime(data.duration);
-        if (progress <= 5 && pr_flag === 1){
-          pr_flag = 0;
-          console.log("song start");
-        }
-        if (progress >= 99 && pr_flag === 0 ){
-          handlePlayButtonClick();
-          pr_flag = 1;
-          console.log("song end");
-        }
-
-          // 更新歌词
-          if (data.lyrics && data.lyrics.length > 0) {
-            updateLyrics(data.lyrics, data.progress);
-          }
-        }
-
-      } catch (error) {
-        console.error('获取歌曲信息失败:', error);
-      }
-      
-      // 每50ms更新一次
-      setTimeout(updateSongInfo, 50);
-    }
 
     // 格式化时间
     function formatTime(ms) {
@@ -682,36 +608,58 @@
     }
 
     // 启动更新
-    updateSongInfo();
+    //updateSongInfo();
 
+    const audioPlayer = document.getElementById('audioPlayer');
     const playBtn = document.querySelector('.play-btn');
+    const progressBar = document.querySelector('.progress');
+    const volumeSlider = document.querySelector('.volume-slider');
     const lyricsToggle = document.querySelector('.lyrics-toggle');
     const playerMain = document.querySelector('.player-main');
     const lyricsContainer = document.querySelector('.lyrics-container');
 
-    async function handlePlayButtonClick() {
-      try {
-        const response = await fetch('/api/toggle_play', {
-          method: 'POST'
-        });
-        const data = await response.json();
-        
-        isPlaying = data.is_playing;
-        const playIcon = playBtn.querySelector('i');
-        if (isPlaying) {
-          playIcon.className = 'bi bi-pause-circle-fill';
-          albumCover.classList.remove('paused');
+    // 播放控制
+    playBtn.addEventListener('click', async function() {
+        if (!audioPlayer.src) return;
+        if (audioPlayer.paused) {
+            await audioPlayer.play();
+            playBtn.querySelector('i').className = 'bi bi-pause-circle-fill';
+            albumCover.classList.remove('paused');
         } else {
-          playIcon.className = 'bi bi-play-circle-fill';
-          albumCover.classList.add('paused');
+            audioPlayer.pause();
+            playBtn.querySelector('i').className = 'bi bi-play-circle-fill';
+            albumCover.classList.add('paused');
         }
-      } catch (error) {
-        console.error('切换播放状态失败:', error);
-      }
-    }
+    });
 
-    // 处理播放/暂停按钮点击
-    playBtn.addEventListener('click', handlePlayButtonClick);
+    // 进度条控制
+    progressBar.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        audioPlayer.currentTime = percent * audioPlayer.duration;
+    });
+
+    // 音量控制
+    volumeSlider.addEventListener('input', function() {
+        audioPlayer.volume = this.value / 100;
+    });
+
+    // 更新进度
+    audioPlayer.addEventListener('timeupdate', function() {
+        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBarEl.style.width = `${progress}%`;
+        currentTime.textContent = formatTime(audioPlayer.currentTime * 1000);
+        totalTime.textContent = formatTime(audioPlayer.duration * 1000);
+        // 更新歌词
+        if (window.currentLyrics) {
+            updateLyrics(window.currentLyrics, audioPlayer.currentTime * 1000);
+        }
+    });
+    // 播放结束处理
+    audioPlayer.addEventListener('ended', function() {
+        playBtn.querySelector('i').className = 'bi bi-play-circle-fill';
+        albumCover.classList.add('paused');
+    });
 
     lyricsToggle.addEventListener('click', () => {
       playerMain.classList.toggle('show-lyrics');
@@ -739,40 +687,7 @@
       root.style.setProperty('--text-secondary', '#2c2c2c');
     });
 
-    
-    // 渲染搜索结果
-    function renderSearchResults(songs) {
-      const searchResultsContainer = document.getElementById('searchResults');
-      searchResultsContainer.innerHTML = '';
-
-      if (!songs || songs.length === 0) {
-        searchResultsContainer.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
-        return;
-      }
-
-      songs.forEach(song => {
-        const songCard = document.createElement('div');
-        songCard.className = 'col-md-4 mb-4';
-        songCard.innerHTML = `
-          <div class="custom-card" data-song-id="${song.id}">
-            <img src="${song.al.picUrl || 'music.png'}" class="card-img-top" alt="${song.name}专辑封面">
-            <div class="card-body">
-              <h5 class="card-title">${song.name}</h5>
-              <p class="card-text">歌手：${song.ar[0].name}</p>
-            </div>
-          </div>
-        `;
-        searchResultsContainer.appendChild(songCard);
-
-        // 添加点击事件，点击卡片时播放歌曲
-        songCard.addEventListener('click', function() {
-          playSong(song);
-          document.querySelector('.music-player').style.display = 'block';
-          document.querySelector('.container.mt-5').style.display = 'none';
-        });
-      });
-    }
-    
+  
     // 搜索功能
     let searchTimeout;
     const searchLoadingIndicator = document.createElement('div');
@@ -842,31 +757,73 @@
       }
     });
     function renderSearchResults(songs) {
-      const searchResultsContainer = document.getElementById('searchResults');
-      searchResultsContainer.innerHTML = '';
-
+      const searchResults = document.getElementById('searchResults');
       if (!songs || songs.length === 0) {
-        searchResultsContainer.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
+        searchResults.innerHTML = '<div class="col-12 text-center"><p>没有找到匹配的歌曲</p></div>';
         return;
       }
-
-      songs.forEach(song => {
-        const songCard = document.createElement('div');
-        songCard.className = 'col-md-4 mb-4';
-        songCard.innerHTML = `
-          <div class="custom-card" data-song-id="${song.id}">
-            <img src="${song.al.picUrl || 'music.png'}" class="card-img-top" alt="${song.name}专辑封面">
+      
+      searchResults.innerHTML = songs.map(song => `
+        <div class="col-md-12">
+          <div class="custom-card" data-id="${song.id}">
+            <img src="${song.al.picUrl || 'music.png'}" class="card-img-top" alt="${song.name}">
             <div class="card-body">
               <h5 class="card-title">${song.name}</h5>
-              <p class="card-text">歌手：${song.ar[0].name}</p>
+              <p class="card-text">${song.ar[0].name}</p>
             </div>
           </div>
-        `;
-        searchResultsContainer.appendChild(songCard);
+        </div>
+      `).join('');
 
-        // 添加点击事件，点击卡片时播放歌曲
-        songCard.querySelector('.custom-card').addEventListener('click', function() {
-          playSong(song);
+      // 添加点击事件监听器
+      document.querySelectorAll('.custom-card').forEach(card => {
+        card.addEventListener('click', async function() {
+          const songId = this.dataset.id;
+          try {
+            const response = await fetch('/api/play', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id: songId })
+            });
+            const data = await response.json();
+            console.log(data);
+            if (data.success && data.url) {
+              // 设置音频源并播放
+              audioPlayer.src = data.url;
+              audioPlayer.play();
+              // 更新UI状态
+              playBtn.querySelector('i').className = 'bi bi-pause-circle-fill';
+              albumCover.classList.remove('paused');
+              // 更新歌曲信息
+              const songInfo = data.song_info;
+              if (songInfo) {
+                console.log(songInfo);
+                songTitle.textContent = songInfo.title;
+                artistName.textContent = songInfo.artist;
+                albumCover.src = songInfo.cover_url;
+                updateBackgroundColor(songInfo.cover_url);
+                // 存储歌词数据
+                if (songInfo.lyrics) {
+                  window.currentLyrics = songInfo.lyrics;
+                  // 初始更新歌词
+                  updateLyrics(window.currentLyrics, 0);
+                }
+              }
+              // 显示播放器界面
+              document.querySelector('.music-player').style.display = 'flex';
+              document.querySelector('.container.mt-5').style.display = 'none';
+              document.querySelector('.dynamic-background').style.display = 'block';
+              const root = document.documentElement;
+              root.style.setProperty('--text-color', '#ffffff');
+              root.style.setProperty('--text-secondary', '#f0f0f0');
+            } else {
+              console.error('播放失败:', data.error);
+            }
+          } catch (error) {
+            console.error('请求错误:', error);
+          }
         });
       });
     }
