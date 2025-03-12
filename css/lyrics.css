@@ -1,0 +1,96 @@
+/* 歌词容器样式 */
+.lyrics-container {
+  position: fixed;
+  right: -50%;
+  top: 0;
+  width: 40%;
+  height: 100vh;
+  background: transparent;
+  backdrop-filter: blur(30px);
+  padding: 2rem;
+  transition: all var(--transition-speed-slow) ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: none;
+}
+
+.lyrics-container.show {
+  right: 0;
+  box-shadow: none;
+}
+
+.lyrics {
+  margin-top: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.6;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 40vh 0;  /* 添加上下内边距使歌词居中 */
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.lyrics::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+.lyrics .lyric-line {
+  opacity: 0.3;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+  cursor: default;
+  text-align: center;
+  white-space: pre-wrap;
+  transform: scale(0.9);
+}
+
+.lyrics .lyric-line.active {
+  opacity: 1;
+  transform: scale(1.05);
+  color: var(--text-color);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.lyrics .lyric-line.nearby {
+  opacity: 0.6;
+  transform: scale(0.95);
+}
+
+.lyrics-toggle {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: transform var(--transition-speed);
+  padding: 0.5rem;
+}
+
+.lyrics-toggle:hover {
+  transform: scale(1.1);
+}
+
+.lyrics-toggle.active {
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+/* 响应式歌词样式 */
+@media (max-width: 768px) {
+  .lyrics-container {
+    z-index: 10;
+    width: 100%;
+    right: -100%;
+    height: 60vh;
+    bottom: 0;
+  }
+  
+  .lyrics {
+    font-size: 1.8rem;
+  }
+} 

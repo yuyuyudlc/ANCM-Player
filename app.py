@@ -5,7 +5,10 @@ from auth import cookie_login
 from playlist_info import get_playlist_songs
 import os
 
-app = Flask(__name__, template_folder=os.path.dirname(os.path.abspath(__file__)))
+app = Flask(__name__, 
+          template_folder=os.path.dirname(os.path.abspath(__file__)),
+          static_folder=os.path.dirname(os.path.abspath(__file__)),
+          static_url_path='')
 CORS(app)
 
 # 尝试使用cookie登录
@@ -14,10 +17,6 @@ cookie_login()
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/search')
-def search():
-    return render_template('search.html')
 
 @app.route('/api/search')
 def api_search():

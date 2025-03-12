@@ -1,0 +1,16 @@
+/* 主样式文件 - 引入所有分离的样式文件 */
+
+/* 引入基础样式 */
+@import './base.css';
+
+/* 引入播放器样式 */
+@import './player.css';
+
+/* 引入歌词样式 */
+@import './lyrics.css';
+
+/* 引入搜索样式 */
+@import './search.css';
+
+/* 引入侧边栏样式 */
+@import './sidebar.css'; 

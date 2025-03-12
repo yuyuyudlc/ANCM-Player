@@ -1,0 +1,148 @@
+/* 音乐播放器样式 */
+.music-player {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.player-container {
+  width: 100%;
+  position: relative;
+}
+
+.player-main {
+  transition: transform var(--transition-speed-slow) ease;
+}
+
+.player-main.show-lyrics {
+  transform: translateX(-30%);
+}
+
+.album-cover {
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition-speed-slow);
+  margin: 0 auto;
+  display: block;
+  transform-origin: center;
+}
+
+.album-cover:hover {
+  transform: scale(1.02);
+}
+
+.album-cover.paused {
+  transform: scale(0.95);
+  opacity: 0.8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.album-cover.paused:hover {
+  transform: scale(0.97);
+}
+
+.song-info {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.song-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.artist-name {
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+}
+
+/* 进度条样式 */
+.progress {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  margin: 1rem 0;
+}
+
+.progress-bar {
+  background-color: var(--text-color);
+  transition: width 0.1s linear;
+}
+
+.time-info {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 控制按钮样式 */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+  position: relative;
+  z-index: 2000;
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: transform var(--transition-speed);
+  padding: 0.5rem;
+}
+
+.control-btn:hover {
+  transform: scale(1.1);
+}
+
+.play-btn {
+  font-size: 5rem;
+}
+
+/* 音量控制样式 */
+.volume-control {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  z-index: 1000;
+}
+
+.volume-slider {
+  width: 100px;
+}
+
+.back-btn:hover {
+  transform: scale(1.1);
+}
+
+/* 响应式播放器样式 */
+@media (max-width: 768px) {
+  .controls {
+    z-index: 1000;
+    position: relative;
+    z-index: 20;
+  }
+  
+  .player-main.show-lyrics {
+    transform: translateX(-5%);
+  }
+} 

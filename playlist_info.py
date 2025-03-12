@@ -23,7 +23,7 @@ def get_playlist_songs():
         index += 1
         if index > 18:
             break
-        song_name = song.text
+        song_name = song.text   
         song_id_match = re.search(r'id=(\d+)', song['href'])
         if song_id_match:
             song_id = song_id_match.group(1)

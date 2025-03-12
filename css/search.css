@@ -1,0 +1,96 @@
+/* 搜索相关样式 */
+.custom-card {
+  background-color: #ede4d3;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.custom-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+  background-color: #c4bcab;
+}
+
+.card-img-top {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.card-body {
+  flex: 1;
+  padding: 0 15px;
+}
+
+.card-title {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.card-text {
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.search-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 20px;
+  padding: 12px 20px;
+  color: var(--text-color);
+  width: 100%;
+  max-width: 500px;
+  transition: all 0.3s;
+}
+
+.search-input:focus {
+  background-color: #ffd299;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.search-button {
+  background-color: #FF7F50;
+  color: var(--text-color);
+  border: none;
+  border-radius: 20px;
+  padding: 12px 25px;
+  margin-left: 10px;
+  transition: all 0.3s;
+}
+
+.search-button:hover {
+  background-color: #dd6236;
+  transform: scale(1.05);
+}
+
+/* 响应式搜索样式 */
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+  }
+
+  .search-button {
+    margin-left: 0;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 500px;
+  }
+} 

@@ -1,0 +1,64 @@
+/* 基础样式和变量定义 */
+:root {
+  --transition-speed: 0.3s;
+  --transition-speed-slow: 0.5s;
+  --bg-primary: #F7EEDD;
+  --bg-secondary: #F7EEDD;
+  --text-color: #000000;
+  --text-secondary: #2c2c2c;
+}
+
+body {
+  transition: background-color var(--transition-speed-slow);
+  color: var(--text-color);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  background-color: var(--bg-primary);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  z-index: -2;
+  transition: opacity var(--transition-speed-slow);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(100px);
+  z-index: -1;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.navbar {
+  display: none;
+}
+
+/* 响应式基础样式 */
+@media (max-width: 768px) {
+  .music-player {
+    padding: 1rem;
+  }
+
+  .song-title {
+    font-size: 1.5rem;
+  }
+} 
