@@ -13,7 +13,50 @@
 <body>
   <audio id="audioPlayer" style="display: none;"></audio>
 
+  <div class="login-container" style="display: flex;" >
+    <h1 class="ANCM">ANCM Player</h1>
+    <p class="introduce">基于pyncm开源库的AM风格的网页播放器</p>
+    <div class="login-box">
+      <div class="login-header">
+        <div class="apple-logo">
+          <i class="bi bi-music-note"></i>
+        </div>
+        <h1>登录</h1>
+      </div>
+      
+      <div class="login-form">
+        <form id="loginForm" method="post" action="/login">
+          <div class="form-floating mb-3">
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="手机号" required>
+            <label for="phone">手机号</label>
+          </div>
+          
+          <div class="form-floating mb-4">
+            <input type="password" class="form-control" id="password" name="password" placeholder="密码" required>
+            <label for="password">密码</label>
+          </div>
+          
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary login-btn">登录</button>
+            <button type="submit" class="btn btn-primary login-btn">注册</button>
+          </div>
+          
+          <div class="login-options">
+            <div class="remember-me">
+              <input type="checkbox" id="remember" name="remember" checked>
+              <label for="remember">记住我</label>
+            </div>
+            <a href="#" class="forgot-password">忘记密码?</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div class="container mt-5" style="display: none;">
+    <div class="toggle-btn">
+      <i class="bi bi-list"></i> 
+    </div>
     <h1 class="page-title">音乐搜索</h1>
     <div class="row mb-4">
       <div class="col-md-12 search-container">
@@ -26,9 +69,7 @@
     </div>
   </div>
 
-    <div class="toggle-btn">
-      <i class="bi bi-list"></i> 
-    </div>
+    
     <div class="sidebar">
       <div class="sidebar-menu">
         <li><a href="#" class="home-link"><i class="bi bi-house-door"></i> 主页</a></li>
@@ -48,7 +89,7 @@
     <img src="" alt="" id="bgImage">
   </div>
 
-  <div class="music-player" style="display: block;">
+  <div class="music-player" style="display: none;">
     <a class="back-btn" style="position: fixed; top: 2rem; left: 2rem; color: var(--text-color); font-size: 2rem; text-decoration: none; transition: transform var(--transition-speed); z-index: 1000;"><i class="bi bi-arrow-left"></i></a>
     <div class="player-container">
       <div class="player-main">
@@ -115,5 +156,6 @@
   <script src="js/search.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/sidebar.js"></script>
+  <script src="js/login.js"></script>
 </body>
 </html>

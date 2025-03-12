@@ -1,7 +1,7 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 from music import search_song, get_song_url
 from flask_cors import CORS
-from auth import cookie_login
+from auth import cookie_login, phone_login
 from playlist_info import get_playlist_songs
 import os
 
@@ -17,6 +17,31 @@ cookie_login()
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    try:
+        data = request.get_json()
+        phone = data.get('phone')
+        password = data.get('password')
+        remember = data.get('remember', False)
+        
+        if not phone or not password:
+            return jsonify({'success': False, 'error': '请提供手机号和密码'})
+        
+        # 调用登录函数
+        login_success = phone_login(phone, password)
+        
+        if phone:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': '登录失败，请检查您的凭据'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/api/search')
 def api_search():

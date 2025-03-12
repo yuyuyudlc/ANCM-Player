@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 初始化页面显示
-    initializePageDisplay();
+    //initializePageDisplay();
     
     // 搜索按钮事件监听
     document.getElementById('searchButton').addEventListener('click', async function() {
