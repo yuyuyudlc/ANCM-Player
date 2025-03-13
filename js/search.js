@@ -77,6 +77,9 @@ function renderSearchResults(songs) {
             songTitle.textContent = songInfo.title;
             artistName.textContent = songInfo.artist;
             albumCover.src = songInfo.cover_url;
+            bar_songTitle.textContent = songInfo.title;
+            bar_artistName.textContent = songInfo.artist;
+            bar_albumCover.src = songInfo.cover_url;
             updateBackgroundColor(songInfo.cover_url);
             // 存储歌词数据
             if (songInfo.lyrics) {

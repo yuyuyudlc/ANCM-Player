@@ -94,8 +94,8 @@
 }
 
 .form-floating .form-control:focus {
-  box-shadow: 0 0 0 4px rgba(255, 0, 34, 0.2);
-  border-color: #f80542;
+  box-shadow: 0 0 0 4px rgba(3, 92, 209, 0.2);
+  border-color: #00fae5;
 }
 
 .form-floating label {

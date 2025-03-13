@@ -1,0 +1,216 @@
+.bar-player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: white;
+    z-index: 1000;
+}
+
+.bar-now-playing {
+    display: flex;
+    align-items: center;
+    width: 220px;
+}
+
+.bar-now-playing-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    background-color: #ddd;
+    margin-right: 12px;
+}
+
+.bar-now-playing-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.bar-now-playing-title {
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar-now-playing-artist {
+    font-size: 12px;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar-player-controls {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    height: 100px;
+    width: 500px;
+    height : 20px;
+}
+
+.bar-control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bar-control-buttons .control-btn {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+}
+
+.bar-control-buttons .play-btn {
+    font-size: 2rem;
+}
+
+.bar-control-buttons .control-btn:hover {
+    color: #3B82F6;
+}
+
+.bar-progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.bar-progress-container .progress {
+    flex: 1;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    margin: 0;
+}
+
+.bar-progress-container .progress-bar {
+    background-color: var(--text-color);
+    transition: width 0.1s linear;
+}
+
+.bar-player-options {
+    width: 220px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bar-player-options .volume-control {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 120px;
+    background: none;
+    padding: 0;
+}
+
+.bar-player-options .volume-control .progress {
+    flex: 1;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    margin: 0;
+}
+
+.bar-player-options .volume-control .progress-bar {
+    background-color: var(--text-color);
+    transition: width 0.1s linear;
+}
+
+.bar-player-options .control-btn {
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.bar-play-button {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #3B82F6;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 12px;
+}
+
+.bar-progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #888;
+}
+
+.bar-progress-bar {
+    flex: 1;
+    height: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.bar-progress-current {
+    position: absolute;
+    height: 100%;
+    width: 30%;
+    background-color: #3B82F6;
+    border-radius: 2px;
+}
+
+.bar-player-options {
+    width: 220px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+.bar-volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 120px;
+}
+
+.bar-volume-bar {
+    flex: 1;
+    height: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.bar-volume-current {
+    position: absolute;
+    height: 100%;
+    width: 70%;
+    background-color: #3B82F6;
+    border-radius: 2px;
+}
+
+.bar-option-button {
+    color: #666;
+    cursor: pointer;
+}

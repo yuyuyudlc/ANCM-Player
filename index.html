@@ -13,7 +13,7 @@
 <body>
   <audio id="audioPlayer" style="display: none;"></audio>
 
-  <div class="login-container" style="display: flex;" >
+  <div class="login-container" style="display: none;" >
     <h1 class="ANCM">ANCM Player</h1>
     <p class="introduce">基于pyncm开源库的AM风格的网页播放器</p>
     <div class="login-box">
@@ -53,10 +53,47 @@
     </div>
   </div>
 
-  <div class="container mt-5" style="display: none;">
+  <div class="container mt-5" style="display: block;">
     <div class="toggle-btn">
       <i class="bi bi-list"></i> 
     </div>
+    <div class="bar-player-bar">
+      <div class="bar-now-playing">
+          <div class="bar-now-playing-image">
+              <img src="music.png" alt="专辑封面" style="height: 50px;" class="bar-albumCover" id="bar-albumCover">
+          </div>
+          <div class="bar-now-playing-info">
+              <div class="bar-now-playing-title">当前播放的歌曲</div>
+              <div class="bar-now-playing-artist">歌手名称</div>
+          </div>
+      </div>
+      
+      <div class="bar-player-controls">
+          <div class="bar-control-buttons">
+              <button class="control-btn"><i class="bi bi-skip-start-fill"></i></button>
+              <button class="control-btn play-btn"><i class="bi bi-play-circle-fill"></i></button>
+              <button class="control-btn"><i class="bi bi-skip-end-fill"></i></button>
+          </div>
+          <div class="bar-progress-container">
+              <span class="current-time">00:45</span>
+              <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width: 30%"></div>
+              </div>
+              <span class="total-time">03:28</span>
+          </div>
+      </div>
+      
+      <div class="bar-player-options">
+          <div class="volume-control">
+              <i class="bi bi-volume-up"></i>
+              <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width: 70%"></div>
+              </div>
+          </div>
+          <button class="control-btn"><i class="bi bi-arrow-repeat"></i></button>
+          <button class="control-btn"><i class="bi bi-music-note-list"></i></button>
+      </div>
+  </div>
     <h1 class="page-title">音乐搜索</h1>
     <div class="row mb-4">
       <div class="col-md-12 search-container">
@@ -116,8 +153,8 @@
               <button class="control-btn">
                 <i class="bi bi-skip-start-fill"></i>
               </button>
-              <button class="control-btn play-btn">
-                <i class="bi bi-play-circle-fill"></i>
+              <button class="control-btn play-btn" >
+                <i class="bi bi-play-circle-fill" ></i>
               </button>
               <button class="control-btn">
                 <i class="bi bi-skip-end-fill"></i>
@@ -142,14 +179,15 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="volume-control">
+      <div class="volume-control">
     <i class="bi bi-volume-up"></i>
     <label>
       <input type="range" class="form-range volume-slider" min="0" max="100" value="80">
     </label>
   </div>
+  </div>
+
+
 
   <script src="js/utils.js"></script>
   <script src="js/player.js"></script>

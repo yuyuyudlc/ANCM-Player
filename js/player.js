@@ -13,6 +13,10 @@ const volumeSlider = document.querySelector('.volume-slider');
 const lyricsToggle = document.querySelector('.lyrics-toggle');
 const playerMain = document.querySelector('.player-main');
 const lyricsContainer = document.querySelector('.lyrics-container');
+const bar_songTitle = document.querySelector('.bar-now-playing-title');
+const bar_albumCover = document.getElementById('bar-albumCover');
+const bar_artistName = document.querySelector('.bar-now-playing-artist');
+
 
 
 let isPlaying = false; // 播放状态
